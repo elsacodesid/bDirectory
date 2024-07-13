@@ -1,11 +1,18 @@
 import { View, Text } from "react-native"
 import React from "react"
+import Header from "../../components/Home/Header";
 
 export default function home() {
   return (
    <View>
+    {/* Header */}
+    <Header />
 
-    <Text style={{fontSize:40, fontFamily: "outfit"}}>Home</Text>
+    {/* Slider */}
+
+    {/* Category */}
+
+    {/* Popular Business List */}
    </View>
   );
 }
