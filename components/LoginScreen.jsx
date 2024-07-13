@@ -3,10 +3,11 @@ import React from "react";
 import * as WebBrowser from "expo-web-browser";
 import { useOAuth } from "@clerk/clerk-expo";
 import * as Linking from "expo-linking"
-import { Colors } from "../constants/Colors.ts";
+import { Colors } from "../constants/Colors";
 
 
 export const useWarmUpBrowser = () => {
+
     React.useEffect(() => {
       // Warm up the android browser to improve UX
       // https://docs.expo.dev/guides/authentication/#improving-user-experience
@@ -29,7 +30,7 @@ const LoginScreen = () => {
         await startOAuthFlow({ redirectUrl: Linking.createURL("/dashboard", { scheme: "myapp" })});
 
       if (createdSessionId) {
-        setActive!({ session: createdSessionId });
+        setActive({ session: createdSessionId });
       } else {
         // Use signIn or signUp for next steps such as MFA
       }
