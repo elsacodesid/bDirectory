@@ -5,7 +5,7 @@ export default function home() {
   return (
    <View>
 
-    <Text>Home</Text>
+    <Text style={{fontSize:40, fontFamily: "outfit"}}>Home</Text>
    </View>
   );
 }
