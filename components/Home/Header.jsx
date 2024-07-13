@@ -1,7 +1,8 @@
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, TextInput } from "react-native";
 import React from "react";
 import { useUser } from "@clerk/clerk-expo";
 import { Colors } from "../../constants/Colors";
+import { Ionicons } from "@expo/vector-icons"
 
 const Header = () => {
   const { user } = useUser();
@@ -11,6 +12,8 @@ const Header = () => {
         padding: 20,
         paddingTop: 40,
         backgroundColor: Colors.PRIMARY,
+        borderBottomLeftRadius: 20,
+        borderBottomRightRadius: 20
       }}
     >
       <View
@@ -43,11 +46,27 @@ const Header = () => {
           {user?.fullName}
         </Text>
         </View>
-        {/* Search Bar */}
-        <View>
-            
-        </View>
+     
+       
       </View>
+         {/* Search Bar */}
+      <View style={{
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 10,
+        backgroundColor: "#fff",
+        padding: 10,
+        marginVertical: 10,
+        marginTop: 15,
+        borderRadius: 8
+      }}>
+            <Ionicons name="search" size={24} color={Colors.PRIMARY} />
+            <TextInput placeholder="Search..." style={{
+              fontFamily: "outfit",
+              fontSize: 16
+            }} />
+        </View>
     </View>
   );
 };
