@@ -58,6 +58,7 @@ const BusinessList = () => {
       <FlatList
         data={businessList}
         horizontal={true}
+        showsHorizontalScrollIndicator={false}
         renderItem={({ item, index }) => (
           <View>
             <BusinessCard business={item} key={index} />
