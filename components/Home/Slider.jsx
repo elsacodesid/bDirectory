@@ -25,7 +25,7 @@ const Slider = () => {
     <View>
       <Text style={{
         fontFamily: "outfit-bold",
-        fontSize: 10,
+        fontSize: 20,
         paddingLeft: 20,
         paddingTop: 20,
         marginBottom: 5
