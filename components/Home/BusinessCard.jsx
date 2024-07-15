@@ -1,10 +1,12 @@
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, TouchableOpacity } from "react-native";
 import React from "react";
-import { Colors } from "../../constants/Colors";
+import { useRouter } from "expo-router";
+
 
 const BusinessCard = ({ business }) => {
+  const router = useRouter();
   return (
-    <View
+    <TouchableOpacity
       style={{
         display: "flex",
         flexDirection: "row",
@@ -15,6 +17,7 @@ const BusinessCard = ({ business }) => {
         backgroundColor: "#fff",
         alignItems: "center"
       }}
+      onPress={() => router.push("/businessdetails/" + business.id)}
     >
       <Image
         source={{ uri: business?.imageUrl }}
@@ -59,7 +62,7 @@ const BusinessCard = ({ business }) => {
           </Text>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

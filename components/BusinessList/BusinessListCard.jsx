@@ -1,13 +1,16 @@
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, TouchableOpacity } from "react-native";
 import React from "react";
 import { Colors } from "../../constants/Colors";
+import { useRouter } from "expo-router";
 
 const BusinessListCard = ({ business }) => {
+
   return (
     <View
       style={{
-        width: 215
+        width: 215,
       }}
+      
     >
       <Image
         source={{ uri: business?.imageUrl }}
@@ -26,7 +29,6 @@ const BusinessListCard = ({ business }) => {
       >
         <View
           style={{
-            display: "flex",
             flexDirection: "row",
             alignItems: "center",
             gap: 2,
@@ -66,7 +68,6 @@ const BusinessListCard = ({ business }) => {
         <View>
           <View
             style={{
-              display: "flex",
               flexDirection: "row",
               gap: 5,
             }}
