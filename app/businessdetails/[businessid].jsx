@@ -5,6 +5,7 @@ import { db } from "../../configs/FirebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
 import { Colors } from "../../constants/Colors";
 import Intro from "../../components/BusinessDetails/Intro";
+import ActionButtons from "../../components/BusinessDetails/ActionButtons";
 
 const BusinessDetails = () => {
   const { businessid } = useLocalSearchParams();
@@ -46,6 +47,7 @@ const BusinessDetails = () => {
           {/* Intro */}
           <Intro business={businessDetails} />
           {/* Action Buttons */}
+          <ActionButtons business={businessDetails} />
 
           {/* About Section */}
         </View>
