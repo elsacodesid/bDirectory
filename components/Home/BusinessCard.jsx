@@ -1,83 +1,48 @@
 import { View, Text, Image } from "react-native";
 import React from "react";
-import { Colors } from "../../constants/Colors";
 
 const BusinessCard = ({ business }) => {
   return (
-    <View>
+    <View
+      style={{
+        padding: 10,
+        margin: 10,
+        borderRadius: 15,
+        backgroundColor: "#fff",
+      }}
+    >
       <Image
         source={{ uri: business?.imageUrl }}
         style={{
-          width: 200,
-          height: 130,
+          width: 120,
+          height: 120,
           borderRadius: 15,
-          marginRight: 15,
         }}
       />
-      <View
-        style={{
-          marginTop: 7,
-          gap: 5,
-        }}
-      >
-        <View style={{
+      <View>
+        <Text>{business.name}</Text>
+        <Text>{business.address}</Text>
+        <View
+          style={{
             display: "flex",
             flexDirection: "row",
-            alignItems: "center",
-            gap: 2
-        }}>
-        <Text
-          style={{
-            fontFamily: "outfit-bold",
-            fontSize: 17,
-            padding: 2
+            gap: 5,
           }}
         >
-          {business.name}
-        </Text>
-        <Text style={{
-            fontFamily: "outfit",
-            backgroundColor: Colors.PRIMARY,
-            color: "#fff",
-            padding: 2,
-            fontSize: 10,
-            borderRadius: 10
-          }}>{business.category}</Text>
-        </View>
-        
-        <Text
-          style={{
-            fontFamily: "outfit",
-            fontSize: 13,
-          }}
-        >
-          {business.address}
-        </Text>
-        <View>
-          <View
+          <Image
+            source={require("../../assets/images/star.png")}
             style={{
-              display: "flex",
-              flexDirection: "row",
-              gap: 5,
+              width: 15,
+              height: 15,
+            }}
+          />
+          <Text
+            style={{
+              fontFamily: "outfit",
             }}
           >
-            <Image
-              source={require("../../assets/images/star.png")}
-              style={{
-                width: 15,
-                height: 15,
-              }}
-            />
-            <Text
-              style={{
-                fontFamily: "outfit",
-              }}
-            >
-              4.5
-            </Text>
-            
-          </View>
-        
+            4.5
+          </Text>
         </View>
       </View>
     </View>

@@ -4,20 +4,21 @@ import { Colors } from "../../constants/Colors";
 import { collection, getDocs, query } from "firebase/firestore";
 import { db } from "../../configs/FirebaseConfig";
 import CategoryCard from "./CategoryCard";
+import { useRouter } from "expo-router";
 
 const Category = () => {
-    const [categoryList, setCategoryList] = useState([])
+  const [categoryList, setCategoryList] = useState([]);
+  const router = useRouter();
   useEffect(() => {
     GetCategoryList();
   }, []);
   const GetCategoryList = async () => {
-    setCategoryList([])
+    setCategoryList([]);
     const q = query(collection(db, "Category"));
     const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => (
-        setCategoryList(prev => [...prev, doc.data()])
-    ));
-
+    querySnapshot.forEach((doc) =>
+      setCategoryList((prev) => [...prev, doc.data()])
+    );
   };
   return (
     <View>
@@ -49,14 +50,20 @@ const Category = () => {
           View All
         </Text>
       </View>
-      <FlatList 
-      data={categoryList}
-      horizontal={true}
-      style={{marginLeft: 20}}
-      showsHorizontalScrollIndicator={false}
-      renderItem={({item, index}) => (
-        <CategoryCard category={item} key={index} onCategoryPress={(category) => console.log(category)} />
-      )}
+      <FlatList
+        data={categoryList}
+        horizontal={true}
+        style={{ marginLeft: 20 }}
+        showsHorizontalScrollIndicator={false}
+        renderItem={({ item, index }) => (
+          <CategoryCard
+            category={item}
+            key={index}
+            onCategoryPress={(item) =>
+              router.push("/businesslist/" + item.name)
+            }
+          />
+        )}
       />
     </View>
   );

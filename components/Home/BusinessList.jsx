@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Colors } from "../../constants/Colors";
 import { collection, getDocs, limit, query } from "firebase/firestore";
 import { db } from "../../configs/FirebaseConfig";
-import BusinessCard from "./BusinessCard";
+import BusinessListCard from "../BusinessList/BusinessListCard";
 
 const BusinessList = () => {
   const [businessList, setBusinessList] = useState([]);
@@ -61,7 +61,7 @@ const BusinessList = () => {
         showsHorizontalScrollIndicator={false}
         renderItem={({ item, index }) => (
           <View>
-            <BusinessCard business={item} key={index} />
+            <BusinessListCard business={item} key={index} />
           </View>
         )}
       />
