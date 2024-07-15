@@ -1,14 +1,19 @@
 import { View, Text, Image } from "react-native";
 import React from "react";
+import { Colors } from "../../constants/Colors";
 
 const BusinessCard = ({ business }) => {
   return (
     <View
       style={{
+        display: "flex",
+        flexDirection: "row",
+        gap: 10,
         padding: 10,
         margin: 10,
         borderRadius: 15,
         backgroundColor: "#fff",
+        alignItems: "center"
       }}
     >
       <Image
@@ -19,9 +24,18 @@ const BusinessCard = ({ business }) => {
           borderRadius: 15,
         }}
       />
-      <View>
-        <Text>{business.name}</Text>
-        <Text>{business.address}</Text>
+      <View style={{
+        flex: 1,
+        gap: 7
+      }}>
+        <Text style={{
+          fontFamily: "outfit-bold",
+          fontSize: 20
+        }}>{business.name}</Text>
+        <Text style={{
+          fontFamily: "outfit",
+          flex: 1
+        }}>{business.address}</Text>
         <View
           style={{
             display: "flex",
