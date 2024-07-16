@@ -4,9 +4,11 @@ import { Colors } from "../../constants/Colors";
 import { useRouter } from "expo-router";
 
 const BusinessListCard = ({ business }) => {
+  const router = useRouter()
 
   return (
-    <View
+    <TouchableOpacity
+    onPress={()=> router.push("/businessdetails/"+business.id)}
       style={{
         width: 215,
       }}
@@ -89,7 +91,7 @@ const BusinessListCard = ({ business }) => {
           </View>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

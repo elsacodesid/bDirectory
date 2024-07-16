@@ -5,6 +5,7 @@ import {
   Image,
   TouchableOpacity,
   Linking,
+  Share,
 } from "react-native";
 import React from "react";
 
@@ -38,7 +39,12 @@ const ActionButtons = ({ business }) => {
     },
   ];
   const onPressHandler = (item) => {
-    if (item.name == "share") return;
+    if (item.name == "Share") {
+      Share.share({
+        message:business?.name+"\n Address="+business.address+"\n Find more details on bDirectory App!"
+      })
+      return
+    };
     Linking.openURL(item.url);
   };
   return (
