@@ -24,7 +24,7 @@ const BusinessDetails = () => {
       const docRef = doc(db, "BusinessList", businessid);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
-        setBusinessDetails(docSnap.data());
+        setBusinessDetails({id: docSnap.id, ...docSnap.data()});
       } else {
         console.log("No such document");
       }
