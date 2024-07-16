@@ -4,6 +4,7 @@ import {
   TextInput,
   TouchableOpacity,
   ToastAndroid,
+  Image,
 } from "react-native";
 import React, { useState } from "react";
 import { Rating } from "react-native-ratings";
@@ -11,6 +12,7 @@ import { Colors } from "../../constants/Colors";
 import { arrayUnion, doc, updateDoc } from "firebase/firestore";
 import { db } from "../../configs/FirebaseConfig";
 import { useUser } from "@clerk/clerk-expo";
+import { FlatList } from "react-native-gesture-handler";
 
 const Reviews = ({ business }) => {
   const [rating, setRating] = useState(4);
@@ -24,6 +26,7 @@ const Reviews = ({ business }) => {
         comment: userInput,
         userName: user?.fullName,
         userImage: user?.imageUrl,
+        userEmail: user?.primaryEmailAddress?.emailAddress,
       }),
     });
     ToastAndroid.show("Comment Added Successfully!", ToastAndroid.BOTTOM);
@@ -50,6 +53,34 @@ const Reviews = ({ business }) => {
           onFinishRating={(rating) => setRating(rating)}
           style={{ paddingVertical: 10 }}
         />
+        {/* Display Posted Reviews */}
+        <View style={{
+          flexDirection: "row",
+          gap: 10,
+       
+          
+        }}>
+          {business?.reviews?.map((item, index) => (
+            <View style={{
+              flex: 1,
+marginLeft: 10,
+              marginRight: 10
+
+            }}>
+              <Image source={{uri:item.userImage}} style={{
+                height: 50,
+                width: 50,
+                borderRadius: 99,
+              }} />
+             <View style={{
+              
+             }}> 
+              <Text style={{fontFamily: "outfit-bold"}}>{item.userName}</Text>
+              <Rating imageSize={20} ratingCount={item.rating} style={{ alignItems: "flex-start"}} />
+              <Text style={{fontFamily: "outfit", marginVertical: 10}}>{item.comment}</Text></View>
+            </View>
+          ))}
+        </View>
         <TextInput
           onChangeText={(value) => setUserInput(value)}
           style={{
@@ -63,6 +94,7 @@ const Reviews = ({ business }) => {
           numberOfLines={4}
         />
       </View>
+
       <TouchableOpacity
         disabled={!userInput}
         onPress={() => onSubmit()}
