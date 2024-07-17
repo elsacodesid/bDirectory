@@ -7,7 +7,7 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../configs/FirebaseConfig.js";
 import ExploreBusinessList from "../../components/Explore/ExploreBusinessList.jsx";
 
-export default function explore() {
+export default function Explore() {
   const [businessList, setBusinessList] = useState([]);
   const getBusinessByCategory = async (category) => {
     const q = query(
