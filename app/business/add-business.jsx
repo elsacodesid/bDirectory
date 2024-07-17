@@ -4,13 +4,23 @@ import { useNavigation } from "expo-router";
 import { Colors } from "../../constants/Colors.ts";
 import * as ImagePicker from "expo-image-picker";
 import RNPickerSelect from "react-native-picker-select";
-import { db } from "../../configs/FirebaseConfig";
+import { db, storage } from "../../configs/FirebaseConfig";
 import { collection, getDocs, query } from "firebase/firestore";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 const AddBusiness = () => {
   const navigation = useNavigation();
   const [image, setImage] = useState(null);
   const [categoryList, setCategoryList] = useState([]);
+
+  const [name, setName] = useState()
+  const [address, setAddress] = useState()
+  const [website, setWebsite] = useState()
+  const [contact, setContact] = useState()
+  const [about, setAbout] = useState()
+  const [category, setCategory] = useState()
+
+
   useEffect(() => {
     navigation.setOptions({
       headerShown: true,
@@ -42,6 +52,21 @@ const AddBusiness = () => {
     });
   };
 
+  const addNewBusiness = async () => {
+const fileName = Date.now().toString()+".jpg"
+const res = await fetch(image)
+const blob = await res.blob()
+
+const imageRef = ref(storage, "/"+fileName)
+
+uploadBytes(imageRef, blob).then((snapshot) => {
+  console.log("File Uploaded...")
+}).then(res =>{
+  getDownloadURL(imageRef).then(async(downloadUrl)=>{
+    console.log(downloadUrl)
+  })}
+)
+  }
   return (
     <ScrollView>
       <Text
@@ -51,7 +76,7 @@ const AddBusiness = () => {
           padding: 20,
         }}
       >
-        Add New Businesss
+        Add New Business
       </Text>
       <Text
         style={{
@@ -93,6 +118,7 @@ const AddBusiness = () => {
       >
         <TextInput
           placeholder="name"
+          onChangeText={v => setName(v)}
           style={{
             padding: 10,
             borderWidth: 1,
@@ -106,6 +132,7 @@ const AddBusiness = () => {
         />
         <TextInput
           placeholder="address"
+          onChangeText={v => setAddress(v)}
           style={{
             padding: 10,
             borderWidth: 1,
@@ -118,6 +145,20 @@ const AddBusiness = () => {
         />
         <TextInput
           placeholder="contact"
+          onChangeText={v => setContact(v)}
+          style={{
+            padding: 10,
+            borderWidth: 1,
+            borderRadius: 5,
+            borderColor: Colors.PRIMARY,
+            fontSize: 17,
+            backgroundColor: "#fff",
+            marginTop: 10,
+          }}
+        />
+        <TextInput
+          placeholder="website"
+          onChangeText={v => setWebsite(v)}
           style={{
             padding: 10,
             borderWidth: 1,
@@ -130,6 +171,7 @@ const AddBusiness = () => {
         />
         <TextInput
           placeholder="about"
+          onChangeText={v => setAbout(v)}
           multiline
           numberOfLines={5}
           style={{
@@ -161,10 +203,23 @@ const AddBusiness = () => {
           }}
         >
           <RNPickerSelect
-            onValueChange={(value) => console.log(value)}
+            onValueChange={(value) => setCategory(value)}
             items={categoryList}
           />
+        
         </View>
+        <TouchableOpacity onPress={() => addNewBusiness()} style={{
+            padding: 10,
+            backgroundColor: Colors.PRIMARY,
+            borderRadius: 15,
+            marginTop: 20
+          }}>
+            <Text style={{
+textAlign: "center",
+fontFamily: "outfit-medium",
+color: "#fff"
+            }}>Add New Business</Text>
+          </TouchableOpacity>
       </View>
     </ScrollView>
   );
