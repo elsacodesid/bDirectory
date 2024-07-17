@@ -10,6 +10,7 @@ import ExploreBusinessList from "../../components/Explore/ExploreBusinessList.js
 export default function Explore() {
   const [businessList, setBusinessList] = useState([]);
   const getBusinessByCategory = async (category) => {
+    setBusinessList([])
     const q = query(
       collection(db, "BusinessList"), where("category", "==", category))
     ;
