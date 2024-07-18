@@ -1,11 +1,38 @@
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  Alert,
+  ToastAndroid,
+} from "react-native";
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
+import { db } from "../../configs/FirebaseConfig.js";
 import { useRouter } from "expo-router";
-import { Colors } from "react-native/Libraries/NewAppScreen";
+import { doc, deleteDoc } from "firebase/firestore";
 
 const Intro = ({ business }) => {
   const router = useRouter();
+  const onDelete = () => {
+    Alert.alert(
+      "Delete Business",
+      "Are you sure you want to delete this business?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => deleteBusiness(),
+        },
+      ]
+    );
+  };
+  const deleteBusiness = async () => {
+    await deleteDoc(doc(db, "BusinessList", business?.id));
+    router.back();
+    ToastAndroid.show("Business Deleted!", ToastAndroid.LONG);
+  };
   return (
     <View>
       <TouchableOpacity onPress={() => router.back()}>
@@ -71,7 +98,9 @@ const Intro = ({ business }) => {
             {business.address}
           </Text>
         </View>
-        <Ionicons name="trash" size={24} color="red" />
+        <TouchableOpacity onPress={() => onDelete()}>
+          <Ionicons name="trash" size={24} color="red" />
+        </TouchableOpacity>
       </View>
     </View>
   );

@@ -8,12 +8,14 @@ import BusinessListCard from "../../components/BusinessList/BusinessListCard.jsx
 const MyBusiness = () => {
   const { user } = useUser();
   const [businessList, setBusinessList] = useState([])
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     user && getUserBusiness();
   }, [user]);
 
   const getUserBusiness = async () => {
+    setLoading(true)
     setBusinessList([])
     const q = query(
       collection(db, "BusinessList"),
@@ -21,9 +23,11 @@ const MyBusiness = () => {
     );
     const querySnapShot = await getDocs(q);
     querySnapShot.forEach((doc) => {
-      console.log(doc.data());
       setBusinessList(prev => [...prev, {id: doc.id, ...doc.data()}])
+ 
+
     });
+         setLoading(false)
   };
   return (
     <View style={{ padding: 20 }}>
@@ -37,6 +41,8 @@ const MyBusiness = () => {
       </Text>
       <FlatList 
       data={businessList}
+      onRefresh={getUserBusiness}
+      refreshing={loading}
       renderItem={({item, index}) => (
 <BusinessListCard business={item} key={index} />
       )}
