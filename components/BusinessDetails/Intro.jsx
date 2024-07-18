@@ -9,11 +9,14 @@ import {
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { db } from "../../configs/FirebaseConfig.js";
-import { useRouter } from "expo-router";
+import { useNavigation, useRouter } from "expo-router";
 import { doc, deleteDoc } from "firebase/firestore";
+import { useUser } from "@clerk/clerk-expo";
 
 const Intro = ({ business }) => {
+  const { user } = useUser();
   const router = useRouter();
+
   const onDelete = () => {
     Alert.alert(
       "Delete Business",
@@ -98,9 +101,11 @@ const Intro = ({ business }) => {
             {business.address}
           </Text>
         </View>
-        <TouchableOpacity onPress={() => onDelete()}>
-          <Ionicons name="trash" size={24} color="red" />
-        </TouchableOpacity>
+        {user?.primaryEmailAddress?.emailAddress == business?.userEmail && (
+          <TouchableOpacity onPress={() => onDelete()}>
+            <Ionicons name="trash" size={24} color="red" />
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );

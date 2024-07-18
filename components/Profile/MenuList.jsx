@@ -1,11 +1,23 @@
-import { View, Text, FlatList, Image, TouchableOpacity } from 'react-native'
+import { View, Text, FlatList, Image, TouchableOpacity, Share } from 'react-native'
 import React from 'react'
 import { Colors } from '../../constants/Colors.ts'
 import { useRouter } from 'expo-router'
+import { useAuth } from '@clerk/clerk-expo'
 
 const MenuList = () => {
+const {signOut} = useAuth()
     const router= useRouter()
     const onMenuClick =(item)=> {
+        if(item.path == "logout"){
+            signOut()
+            return
+        }
+        if(item.path == "share"){
+            Share.share({
+                message: "A Very Cool App! Check this out!"
+            })
+            return
+        }
         router.push(item.path)
     }
     const menuList = [
@@ -25,13 +37,13 @@ const MenuList = () => {
             id: 3,
             name: "Share App",
             icon: require("../../assets/images/share_1.png"),
-            path: ""
+            path: "share"
         },
         {
             id: 4,
             name: "Logout",
             icon: require("../../assets/images/logout.png"),
-            path: ""
+            path: "logout"
         },
 
     ]

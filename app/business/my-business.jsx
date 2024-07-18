@@ -3,31 +3,39 @@ import React, { useEffect, useState } from "react";
 import { useUser } from "@clerk/clerk-expo";
 import { db } from "../../configs/FirebaseConfig";
 import { collection, getDocs, query, where } from "firebase/firestore";
-import BusinessListCard from "../../components/BusinessList/BusinessListCard.jsx"
+import BusinessListCard from "../../components/BusinessList/BusinessListCard.jsx";
+import { useNavigation } from "expo-router";
+import { Colors } from "../../constants/Colors.ts";
 
 const MyBusiness = () => {
   const { user } = useUser();
-  const [businessList, setBusinessList] = useState([])
-  const [loading, setLoading] = useState(false)
-
+  const [businessList, setBusinessList] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigation();
   useEffect(() => {
+    navigate.setOptions({
+      headerShown: true,
+      headerTitle: "My Businesss",
+      headerStyle: {
+        backgroundColor: Colors.PRIMARY,
+      },
+      headerTintColor: "#fff",
+    });
     user && getUserBusiness();
   }, [user]);
 
   const getUserBusiness = async () => {
-    setLoading(true)
-    setBusinessList([])
+    setLoading(true);
+    setBusinessList([]);
     const q = query(
       collection(db, "BusinessList"),
       where("userEmail", "==", user?.primaryEmailAddress.emailAddress)
     );
     const querySnapShot = await getDocs(q);
     querySnapShot.forEach((doc) => {
-      setBusinessList(prev => [...prev, {id: doc.id, ...doc.data()}])
- 
-
+      setBusinessList((prev) => [...prev, { id: doc.id, ...doc.data() }]);
     });
-         setLoading(false)
+    setLoading(false);
   };
   return (
     <View style={{ padding: 20 }}>
@@ -39,13 +47,13 @@ const MyBusiness = () => {
       >
         MyBusiness
       </Text>
-      <FlatList 
-      data={businessList}
-      onRefresh={getUserBusiness}
-      refreshing={loading}
-      renderItem={({item, index}) => (
-<BusinessListCard business={item} key={index} />
-      )}
+      <FlatList
+        data={businessList}
+        onRefresh={getUserBusiness}
+        refreshing={loading}
+        renderItem={({ item, index }) => (
+          <BusinessListCard business={item} key={index} />
+        )}
       />
     </View>
   );
