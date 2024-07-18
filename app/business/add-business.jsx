@@ -1,25 +1,36 @@
-import { View, Text, Image, TouchableOpacity, TextInput, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  TextInput,
+  ScrollView,
+  ToastAndroid,
+  ActivityIndicator,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { useNavigation } from "expo-router";
 import { Colors } from "../../constants/Colors.ts";
 import * as ImagePicker from "expo-image-picker";
 import RNPickerSelect from "react-native-picker-select";
 import { db, storage } from "../../configs/FirebaseConfig";
-import { collection, getDocs, query } from "firebase/firestore";
+import { collection, doc, getDocs, query, setDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { useUser } from "@clerk/clerk-expo";
 
 const AddBusiness = () => {
   const navigation = useNavigation();
   const [image, setImage] = useState(null);
   const [categoryList, setCategoryList] = useState([]);
+  const {user} = useUser()
 
-  const [name, setName] = useState()
-  const [address, setAddress] = useState()
-  const [website, setWebsite] = useState()
-  const [contact, setContact] = useState()
-  const [about, setAbout] = useState()
-  const [category, setCategory] = useState()
-
+  const [name, setName] = useState();
+  const [address, setAddress] = useState();
+  const [website, setWebsite] = useState();
+  const [contact, setContact] = useState();
+  const [about, setAbout] = useState();
+  const [category, setCategory] = useState();
+  const [loading, setLoading]=useState(false)
 
   useEffect(() => {
     navigation.setOptions({
@@ -35,6 +46,7 @@ const AddBusiness = () => {
       allowsEditing: true,
       quality: 1,
     });
+    console.log(result)
     setImage(result.assets[0].uri);
   };
   const getCategoryList = async () => {
@@ -53,20 +65,41 @@ const AddBusiness = () => {
   };
 
   const addNewBusiness = async () => {
-const fileName = Date.now().toString()+".jpg"
-const res = await fetch(image)
-const blob = await res.blob()
+    setLoading(true)
+    const fileName = Date.now().toString() + ".jpg";
+    const res = await fetch(image);
+    const blob = await res.blob();
 
-const imageRef = ref(storage, "/"+fileName)
+    const imageRef = ref(storage, "/" + fileName);
 
-uploadBytes(imageRef, blob).then((snapshot) => {
-  console.log("File Uploaded...")
-}).then(res =>{
-  getDownloadURL(imageRef).then(async(downloadUrl)=>{
-    console.log(downloadUrl)
-  })}
-)
-  }
+    uploadBytes(imageRef, blob)
+      .then((snapshot) => {
+        console.log("File Uploaded...");
+      })
+      .then((res) => {
+        getDownloadURL(imageRef).then(async (downloadUrl) => {
+          console.log(downloadUrl);
+          saveBusinessDetails(downloadUrl);
+        });
+      });
+
+    const saveBusinessDetails = async (imageUrl) => {
+      await setDoc(doc(db, "BusinessList", Date.now().toString()), {
+        name: name,
+        address: address,
+        contact: contact,
+        about: about,
+        website: website,
+        category: category,
+        username: user?.fullName,
+        userEmail: user?.primaryEmailAddress.emailAddress,
+        userImage: user?.imageUrl,
+        imageUrl: imageUrl
+      });
+setLoading(false)
+      ToastAndroid.show("New Business Added!", ToastAndroid.LONG)
+    };
+  };
   return (
     <ScrollView>
       <Text
@@ -82,6 +115,7 @@ uploadBytes(imageRef, blob).then((snapshot) => {
         style={{
           fontFamily: "outfit",
           color: Colors.GRAY,
+          marginLeft: 10
         }}
       >
         Fill all details in order to add a new business
@@ -89,6 +123,7 @@ uploadBytes(imageRef, blob).then((snapshot) => {
       <TouchableOpacity
         style={{
           marginTop: 20,
+          marginLeft: 10
         }}
         onPress={() => onImagePick()}
       >
@@ -98,6 +133,7 @@ uploadBytes(imageRef, blob).then((snapshot) => {
             style={{
               width: 100,
               height: 100,
+            
             }}
           />
         ) : (
@@ -118,7 +154,7 @@ uploadBytes(imageRef, blob).then((snapshot) => {
       >
         <TextInput
           placeholder="name"
-          onChangeText={v => setName(v)}
+          onChangeText={(v) => setName(v)}
           style={{
             padding: 10,
             borderWidth: 1,
@@ -132,7 +168,7 @@ uploadBytes(imageRef, blob).then((snapshot) => {
         />
         <TextInput
           placeholder="address"
-          onChangeText={v => setAddress(v)}
+          onChangeText={(v) => setAddress(v)}
           style={{
             padding: 10,
             borderWidth: 1,
@@ -145,7 +181,7 @@ uploadBytes(imageRef, blob).then((snapshot) => {
         />
         <TextInput
           placeholder="contact"
-          onChangeText={v => setContact(v)}
+          onChangeText={(v) => setContact(v)}
           style={{
             padding: 10,
             borderWidth: 1,
@@ -158,7 +194,7 @@ uploadBytes(imageRef, blob).then((snapshot) => {
         />
         <TextInput
           placeholder="website"
-          onChangeText={v => setWebsite(v)}
+          onChangeText={(v) => setWebsite(v)}
           style={{
             padding: 10,
             borderWidth: 1,
@@ -171,7 +207,7 @@ uploadBytes(imageRef, blob).then((snapshot) => {
         />
         <TextInput
           placeholder="about"
-          onChangeText={v => setAbout(v)}
+          onChangeText={(v) => setAbout(v)}
           multiline
           numberOfLines={5}
           style={{
@@ -206,20 +242,31 @@ uploadBytes(imageRef, blob).then((snapshot) => {
             onValueChange={(value) => setCategory(value)}
             items={categoryList}
           />
-        
         </View>
-        <TouchableOpacity onPress={() => addNewBusiness()} style={{
+        <TouchableOpacity
+          onPress={() => addNewBusiness()}
+          disabled={loading}
+          style={{
             padding: 10,
             backgroundColor: Colors.PRIMARY,
             borderRadius: 15,
-            marginTop: 20
-          }}>
-            <Text style={{
-textAlign: "center",
-fontFamily: "outfit-medium",
-color: "#fff"
-            }}>Add New Business</Text>
-          </TouchableOpacity>
+            marginTop: 20,
+          }}
+        >
+          {loading ? <ActivityIndicator size={"large"} color={"#fff"} /> : <Text
+            style={{
+              textAlign: "center",
+              fontFamily: "outfit-medium",
+              color: "#fff",
+            }}
+          >
+            Add New Business
+          </Text>}
+          
+        </TouchableOpacity>
+        <View style={{
+          height: 100
+        }}></View>
       </View>
     </ScrollView>
   );
